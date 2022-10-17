@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <title>Hi-Lex</title>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'></script>
+  <script src='scripts_jscssphp/functs_experiment.js'></script>
+  <script src="https://niket-agrawal.github.io/jsPsych/jsPsych/jspsych.js"></script>
+  <script src="https://niket-agrawal.github.io/jsPsych/jsPsych/plugins/jspsych-fullscreen.js"></script>
+  <script src="https://niket-agrawal.github.io/jsPsych/jsPsych/plugins/jspsych-resize.js"></script>
+  <script src="https://niket-agrawal.github.io/jsPsych/jsPsych/plugins/jspsych-instructions.js"></script>
+  <script src="https://niket-agrawal.github.io/jsPsych/jsPsych/plugins/jspsych-survey-html-form.js"></script>
+  <script src="https://niket-agrawal.github.io/jsPsych/jsPsych/plugins/jspsych-html-keyboard-response.js"></script>
+  <script src="https://niket-agrawal.github.io/jsPsych/jsPsych/plugins/jspsych-html-button-response.js"></script>
+  <link href="https://niket-agrawal.github.io/jsPsych/jsPsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+  <style>
+    body {
+      background-color: #000000;
+      background-color: #b3b3b3;
+      background-color: #bfbfbf; 
+      /*background-color: #a6a6a6;*/ }
+    
+    b {
+      color: yellow; }
+
+    #stim_item {
+      padding: 50px; }
+
+    .btn-primary-no {
+      color:#fff;
+      background-color: #e56f6f;
+      border: 1px solid #d75526; }
+    .btn-primary-yes {
+      color:#fff;
+      background-color: #2bd12099;
+      border: 1px solid #4cae4f; }
+    .btn-primary-yes:active {
+      transform: scale(0.90); /* Scaling button to 0.98 to its original size */
+      box-shadow: 3px 2px 12px 1px rgba(0, 0, 0, 0.24); /* Lowering the shadow */ }
+    .btn-primary-no:active {
+    transform: scale(0.90); /* Scaling button to 0.98 to its original size */
+    box-shadow: 3px 2px 12px 1px rgba(0, 0, 0, 0.24); /* Lowering the shadow */ }
+  </style>
+</head>
+
+<script>
+  //Failsafe: to avoid filename overwrite if subject refreshes the screen
+  failsafe = Math.round(Math.random()*(99-10)+10);
+  //https://jsbin.com/wivanojuqo/edit?html,console,output
+  //https://www.toptal.com/developers/keycode/for/z
+    $(window).keypress(function(event) {
+      if (event.keyCode === 122)
+        $("#z_butt").click();
+      else if (event.keyCode === 109)
+        $('#m_butt').click();
+    });
+
+  var mainStim_obj = shuffleArray(JSON.parse(process(main_stim_1)));
+  var practStim_obj = shuffleArray(JSON.parse(process(pract_stim_1)));
+  var stim_obj = practStim_obj.concat(mainStim_obj);
+
+  //https://www.codegrepper.com/code-examples/javascript/how+to+generate+random+id+in+javascript
+  //var a = jsPsych.data.get().values()[0].cbOrder;
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const pid_pass = urlParams.get('part_id');
+  device_type = urlParams.get('device');
+  if(screen.width >= 550) {
+    stim_size = '80px';
+    yes_butt = 'btn btn-primary-yes btn-md m-5 px-4';
+    no_butt = 'btn btn-primary-no btn-md m-5 px-4';
+  }
+  else if(screen.width>=350 && screen.width<=550) {
+    stim_size = '55px';
+    yes_butt = 'btn btn-primary-yes btn-md m-3 px-3';
+    no_butt = 'btn btn-primary-no btn-md m-3 px-3';
+  }
+  else if(screen.width>=200 && screen.width<=350) {
+    stim_size = '25px';
+    yes_butt = 'btn btn-primary-yes btn-sm m-2 px-2';
+    no_butt = 'btn btn-primary-no btn-sm m-2 px-2';
+  }
+  else if(screen.width<=200) {
+    stim_size = '10px';
+    yes_butt = 'btn btn-primary-yes btn-sm m-1 px-1';
+    no_butt = 'btn btn-primary-no btn-sm m-1 px-1';
+  }
+
+  if(device_type=='null' || device_type==null || device_type==undefined) {
+    device_type = 'web'; }
+  var pid_show = pid_pass.slice(0,4) + pid_pass.slice(24,32);
+  console.log(pid_pass);
+  console.log(pid_show);
+  
+  // https://stackoverflow.com/questions/1248081/how-to-get-the-browser-viewport-dimensions
+  // const viewport_width = Math.max(document.documentElement.clientWidth || 0, window.outerWidth || 0);
+  // const viewport_height = Math.max(document.documentElement.clientHeight || 0, window.outerHeight || 0);
+
+  for (let index = 0; index < stim_obj.length; index++) {
+    temp = stim_obj[index].stim;
+    a = "<div id='stim_item' style='font-size:"+stim_size+"; onmousedown='return false' onselectstart='return false'>"+temp+"<br><br></div>"
+    stim_obj[index].stim = a;
+    stim_obj[index].data = {type: stim_obj[index].type, corrResp: stim_obj[index].corrResp};
+    delete stim_obj[index].corrResp;
+    delete stim_obj[index].type; }
+
+  var save_script = "scripts_jscssphp/save2_jquery.php";
+  var backup_script = "scripts_jscssphp/save1_xmlhttp.php";
+  
+  var fullscreen_trial = {
+    type: 'fullscreen',
+    fullscreen_mode: true,
+    message: '<strong><p>यह बटन दबाने पर आपकी स्क्रीन फुल स्क्रीन हो जायेगी और आपका माउस कर्सर छुप जाएगा। <br><br>The experiment will switch to full screen mode and your mouse cursor will be hidden when you press the button below.</p></strong>',
+    delay_after: 1000
+  }
+  var fullscreen_trial_exit = {
+    type: 'fullscreen',
+    fullscreen_mode: false
+  }
+  var cursor_off = {
+    type : "html-keyboard-response",
+    choices: jsPsych.ALL_KEYS,
+    stimulus: "",
+    trial_duration: 0,
+    on_finish: function(data) {
+      document.body.style.cursor = 'none'; // hide the mouse cursor during the task
+    }
+  }
+  var cursor_on = {
+    type : "html-keyboard-response",
+    choices: jsPsych.NO_KEYS,
+    trial_duration: 0,
+    stimulus: "",
+    on_finish: function(data) {
+      document.body.style.cursor = 'auto';
+    }
+  }
+
+  var instructions = {
+    type: 'instructions',
+    pages:["<h1 style = 'color: black;'>सामान्य निर्देश - Instructions</h1><br>"+
+    "<img src='images/inst_"+device_type+".png' style='max-width:550px; width: 100%;'><br><br>",
+    "<div style = 'color: black;'><strong><p>यदि आप तैयार हैं, तो परीक्षण शुरू करने के लिए <b>Next</b> दबाएं । यदि आप फिर से निर्देशों को देखना चाहते हैं, तो <b>Previous</b> दबाएं।<br><br></p>If you are ready, press <b>Next</b> to start the test. If you want to refer instructions again, press <b>Previous</b></p></strong></div>"],
+    show_clickable_nav: true,
+    show_page_number: true,
+    on_start: function() {
+        jsPsych.setProgressBar(0); // set progress bar to 0 at the start of experiment
+      }
+    }
+
+  var target = {
+    type: 'html-button-response',
+    choices: ['z - नहीं', 'm - सही'],
+    button_html: ['<br><button id="z_butt" type="button" class="'+no_butt+'">%choice%</button>',
+                  '<br><button id="m_butt" type="button" class="'+yes_butt+'">%choice%</button>'],
+    trial_duration:null,
+    stimulus: jsPsych.timelineVariable('stim'),
+    maintain_aspect_ratio: true,
+    on_finish: function(data) {
+      // at the end of each trial, update the progress bar
+      // based on the current value and the proportion to update for each trial
+      var curr_progress_bar_value = jsPsych.getProgressBarCompleted();
+      jsPsych.setProgressBar(curr_progress_bar_value + (1/stim_obj.length));
+      var response = data.button_pressed;
+      //console.log(response);
+      //console.log(data.type);
+      if(response==null) {
+        data.acc = 'missed';
+      } else if (response == 0 || 1){
+        if (response==0) {
+          data.givenResp = 'z';
+          var given_resp = "nonword";
+        }
+        else if (response==1) {
+          data.givenResp = 'm';
+          var given_resp = "word";
+        }
+        
+        if (given_resp==data.type)
+          data.acc = 1;//console.log("Yes")
+        else if (given_resp!=data.type)
+          data.acc = 0;//console.log("No")
+      }
+    }
+  }
+
+  var end_screen = {
+    type: "survey-html-form",
+    preamble: '<p><br>यदि आप अपने अंक प्राप्त करना चाहते हैं, तो कृपया नीचे अपना विवरण भरें। हम आपके परिणाम की गणना करेंगे और आपके ईमेल/ फ़ोन पर भेज देंगे।'+
+              '<br><br>'+
+              'If you wish to receive your score, please fill your details below. We will calculate and send your result to your email address/ phone number.',
+    html: '<p><strong>नाम - Name* </strong>: <input id="af" name="Name" type:"text" required></p>'+
+          '<p><strong>ईमेल - Email </strong>: <input name="Email_ID" type:"text"></p>'+
+          '<p><strong>क्या आप मूल रूप से हिन्दी भाषी हैं?<br>Are you a native Hindi speaker?</strong></p>'+
+          '<input type="radio" id="yes" name="native" value="yes" required><label for="yes">&nbsp;<strong>हाँ - Yes</strong></label>  &emsp;&emsp;'+
+          '<input type="radio" id="no" name="native" value="no" required><label for="no">&nbsp;<strong>नहीं - No</strong></label> <br><br>',
+    //html: '<p>Participant ID * : '+pid_show+'</p> <p>Email_ID (optional) : <input name="Email_ID" type:"text"/></p><br>',
+    autofocus: 'af',
+    button_label: ["Go to Next Screen - अगली स्क्रीन पर जाएं"],
+    dataAsArray: false,
+    on_load: function(){
+      var file_name_server = pid_pass + '_pre_data'+failsafe;
+      //var file_name_local = pid_pass + '_pre_local-data'+failsafe+'.csv';
+      var file_name_other = pid_pass + '_pre_backup'+failsafe; //using jQuery function
+      save_data_json(file_name_server,"data_backup",jsPsych.data.get().json()); // on server in subjects_data folder (JSON)
+      //save_data_csv(file_name_server,"data_backup",jsPsych.data.get().csv());  // on server in subjects_data folder (CSV)
+      saveData(file_name_other+'.csv', 'data_backup', jsPsych.data.get().csv());  // on server in subjects_data folder as backup script
+      //jsPsych.data.get().localSave('csv', file_name_local); // locally to subjects PC
+      //console.log(jsPsych.data.get().csv());
+
+      /// function that calculates accuracy percentage (just to email)
+      all_trials = JSON.parse(jsPsych.data.get().json());
+      total_acc = 0;
+      for (let trial in all_trials) {
+        if(all_trials[trial].acc==1)
+          total_acc = total_acc + 1;
+      }
+      total_acc = total_acc*100/(stim_obj.length);
+      console.log(total_acc)
+      /// function that calculates accuracy percentage (just to email)
+      total_rt = 0;
+      for (let trial in all_trials) {
+        if(all_trials[trial].type)
+          total_rt = total_rt + all_trials[trial].rt;
+      }
+      avg_rt = total_rt/(stim_obj.length)
+      console.log(avg_rt)
+
+    },
+    on_finish: function (data){      
+      data.responses = JSON.parse(data.responses);
+      jsPsych.data.addProperties({Part_ID: pid_show, Name: data.responses.Name, Email_ID: data.responses.Email_ID, Native: data.responses.native, AccPerc: total_acc, AvgRT: avg_rt});
+	  }
+	}
+
+
+  var end_screen2 = {
+    type: "html-keyboard-response",
+    stimulus: '<h1>भाग लेने के लिए धन्यवाद - Thanks for participating.</h1><br>'+
+              '<p><br><strong>कृपया कुछ सेकंड प्रतीक्षा करें, जब तक हम आपका डेटा सेव करते हैं। यह स्क्रीन अपने आप बंद हो जाएगी।</strong><br>आपका समापन कोड <a style="color:yellow;">'+pid_show+'</a> है। कृपया इसे नोट कर लें या इसका स्क्रीनशॉट लें। यदि पूछा जाए तो इसे प्रयोगकर्ता को प्रदान करें।'+
+              '<br><br>'+
+              '<br><strong>Please wait for few seconds while we save your data. This screen will close automatically.</strong><br>Your completion code is <a style="color:yellow;">'+pid_show+'</a>. Please note it down or screenshot it. Provide this to experimenter, if asked.<br><br></p>',
+    trial_duration: 6000,
+    on_load: function(){
+      var file_name_server = pid_pass + '_post_data'+failsafe;
+      var file_name_local = pid_pass + '_post_local-data'+failsafe+'.csv';
+      var file_name_other = pid_pass + '_post_backup'+failsafe; //using jQuery function
+      save_data_json(file_name_server,"data_main",jsPsych.data.get().json()); // on server in subjects_data folder (JSON)
+      save_data_csv(file_name_server,"data_main",jsPsych.data.get().csv());  // on server in subjects_data folder (CSV)
+      saveData(file_name_other+'.csv', 'data_backup', jsPsych.data.get().csv());  // on server in subjects_data folder as backup script
+    }
+  }
+
+  var exp_trial = {
+    timeline: [target],
+    timeline_variables: stim_obj,
+    data: jsPsych.timelineVariable('data'),
+    randomize_order: false,
+    post_trial_gap: 0,
+    repetitions:1
+  }
+  
+  jsPsych.init({
+    timeline: [instructions, fullscreen_trial, cursor_off, exp_trial, cursor_on, end_screen, end_screen2, fullscreen_trial_exit],
+    //timeline: [end_screen2],
+    show_progress_bar: true,
+    auto_update_progress_bar: false,
+    message_progress_bar: 'Task progress',
+    minimum_valid_rt: 100,
+    on_finish: function(){
+      //jsPsych.data.displayData();
+      //window.open('','_self').close();
+      alert("धन्यवाद! अब आप बंद कर सकते हैं। \n\n Thanks! You can now close the window.");
+    }
+  })
+  
+</script>
+
+</html>
