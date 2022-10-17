@@ -91,8 +91,6 @@ function shuffleArray(array) {
   return array;
 }
 
-var main_stim_1 = "stim,type,corrResp\nstim_item,type_word,corrResp\nदर्शन,word,m\nप्ज,nonword,z\nजैशप,nonword,z\nलगभग,word,m\nबेहतर,word,m\nमुकट्री,nonword,z\nजाना,word,m\nजानकारी,word,m\nपत्र,word,m\nबाशनुभूति,nonword,z\nजऊंटल,nonword,z\nहेकोमा,nonword,z\nकरनी,word,m\nओयेंबिला,nonword,z";
+var main_stim_1 = "stim,type,corrResp\nदर्शन,word,m\nप्ज,nonword,z\nजैशप,nonword,z\nलगभग,word,m\nबेहतर,word,m\nमुकट्री,nonword,z\nजाना,word,m\nजानकारी,word,m\nपत्र,word,m\nबाशनुभूति,nonword,z\nजऊंटल,nonword,z\nहेकोमा,nonword,z\nकरनी,word,m\nओयेंबिला,nonword,z";
 
-
-
-var pract_stim_1 = "stim,type,corrResp\nstim_item,type_word,corrResp\nदर्शन,word,m\nप्ज,nonword,z\nजैशप,nonword,z\nलगभग,word,m\nबेहतर,word,m\nमुकट्री,nonword,z\nजाना,word,m\nजानकारी,word,m\nपत्र,word,m\nबाशनुभूति,nonword,z\nजऊंटल,nonword,z\nहेकोमा,nonword,z\nकरनी,word,m\nओयेंबिला,nonword,z";
+var pract_stim_1 = "stim,type,corrResp\nदर्शन,word,m\nप्ज,nonword,z\nजैशप,nonword,z\nलगभग,word,m\nबेहतर,word,m\nमुकट्री,nonword,z\nजाना,word,m\nजानकारी,word,m\nपत्र,word,m\nबाशनुभूति,nonword,z\nजऊंटल,nonword,z\nहेकोमा,nonword,z\nकरनी,word,m\nओयेंबिला,nonword,z";
